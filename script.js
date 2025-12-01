@@ -71,7 +71,7 @@ let gameState = {
     currentQuestion: 0,
     score: 0,
     currentScreen: 'welcome-screen',
-    answered: false
+    correctAnswerObj: false
 };
 
 // DOM Elements
@@ -203,29 +203,27 @@ function submitAnswer() {
     const userAnswer = elements.answerInput.value.trim();
     const correctAnswer = questions[gameState.currentQuestion].answer;
 
-    gameState.answered = true;
-
-    // Disable input
-    elements.answerInput.disabled = true;
-
     // Check if answer is correct (case insensitive comparison)
     if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
         elements.answerFeedback.textContent = 'صحيح';
         elements.answerFeedback.classList.remove('incorrect');
         elements.answerFeedback.classList.add('correct');
+        gameState.answered = true;
+        setTimeout(() => {
+            elements.nextBtn.classList.remove('hidden');
+        }, 1000);
         gameState.score++;
     } else {
         elements.answerFeedback.textContent = `الإجابة خاطئة`;
         elements.answerFeedback.classList.remove('correct');
         elements.answerFeedback.classList.add('incorrect');
+        elements.answerFeedback.style.animation = 'shakeNormal 0.5s';
+        setTimeout(() => {
+            elements.answerFeedback.style.animation = '';
+        }, 500);
     }
 
     elements.answerFeedback.classList.remove('hidden');
-
-    // Show next button after a delay
-    setTimeout(() => {
-        elements.nextBtn.classList.remove('hidden');
-    }, 1000);
 }
 
 // Move to next question
@@ -356,6 +354,11 @@ document.addEventListener('DOMContentLoaded', () => {
             0%, 100% { transform: translateX(0); }
             10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
             20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        @keyframes shakeNormal {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+            20%, 40%, 60%, 80% { transform: translateX(2px); }
         }
     `;
     document.head.appendChild(style);
