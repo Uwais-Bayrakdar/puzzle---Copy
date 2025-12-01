@@ -230,35 +230,25 @@ function submitAnswer() {
 // Move to next question
 function nextQuestion() {
     gameState.currentQuestion++;
-    // Check if we need to show an encryption screen
-    if (gameState.currentQuestion === 3) {
-        showScreen('encryption-screen-1');
+    
+    // Check specific questions for the "Hacked" state
+    if (gameState.currentQuestion === 3 || 
+        gameState.currentQuestion === 6 || 
+        gameState.currentQuestion === 11 || 
+        gameState.currentQuestion === questions.length) {
+        
+        // Show the specific encryption screen
+        if (gameState.currentQuestion === 3) showScreen('encryption-screen-1');
+        else if (gameState.currentQuestion === 6) showScreen('encryption-screen-2');
+        else if (gameState.currentQuestion === 11) showScreen('encryption-screen-3');
+        else showScreen('encryption-screen-4');
+
         elements.titleText.textContent = "تم اختراق البرنامج";
         elements.titleText.style.color = "#ff0000ff";
-        document.body.style.backgroundImage = "url('CIS-Club/CIS-CLUB.jpg')";
-        document.body.style.backgroundSize = "cover";
-        document.body.style.backgroundPosition = "center";
-    } else if (gameState.currentQuestion === 6) {
-        showScreen('encryption-screen-2');
-        elements.titleText.textContent = "تم اختراق البرنامج";
-        elements.titleText.style.color = "#ff0000ff";
-        document.body.style.backgroundImage = "url('CIS-Club/CIS-CLUB.jpg')";
-        document.body.style.backgroundSize = "cover";
-        document.body.style.backgroundPosition = "center";
-    } else if (gameState.currentQuestion === 11) {
-        showScreen('encryption-screen-3');
-        elements.titleText.textContent = "تم اختراق البرنامج";
-        elements.titleText.style.color = "#ff0000ff";
-        document.body.style.backgroundImage = "url('CIS-Club/CIS-CLUB.jpg')";
-        document.body.style.backgroundSize = "cover";
-        document.body.style.backgroundPosition = "center";
-    } else if (gameState.currentQuestion === questions.length) {
-        showScreen('encryption-screen-4');
-        elements.titleText.textContent = "تم اختراق البرنامج";
-        elements.titleText.style.color = "#ff0000ff";
-        document.body.style.backgroundImage = "url('CIS-Club/CIS-CLUB.jpg')";
-        document.body.style.backgroundSize = "cover";
-        document.body.style.backgroundPosition = "center";
+
+        // FIX: Add the class instead of setting URL directly
+        document.body.classList.add('hacked-mode');
+        
     } else {
         loadQuestion();
         updateProgress();
@@ -302,22 +292,17 @@ function checkEncryptionKey(keyNumber) {
         // Reset the input and hide error
         inputElement.value = '';
         errorElement.classList.add('hidden');
+
+        document.body.classList.remove('hacked-mode');
         
         if (keyNumber === 4) {
             // For the final key, show the win screen
             showScreen(nextScreen);
         } else {
             // Update the question number to the next one after the key requirement
-            if (keyNumber === 1) {
-                gameState.currentQuestion = 3; // Next question after 3rd
-                document.body.style.background = "url('SyriaDesktop.jpg')"
-            } else if (keyNumber === 2) {
-                gameState.currentQuestion = 6; // Next question after 6th
-                document.body.style.background = "url('SyriaDesktop.jpg')"
-            } else if (keyNumber === 3) {
-                gameState.currentQuestion = 11; // Next question after 11th
-                document.body.style.background = "url('SyriaDesktop.jpg')"
-            }
+            if (keyNumber === 1) gameState.currentQuestion = 3; 
+            else if (keyNumber === 2) gameState.currentQuestion = 6; 
+            else if (keyNumber === 3) gameState.currentQuestion = 11; 
             
             loadQuestion();
             updateProgress();
@@ -351,7 +336,13 @@ function resetGame() {
         answered: false
     };
     
-    document.body.style.background = "url('SyriaDesktop.jpg')"
+    // FIX: Remove hacked mode class
+    document.body.classList.remove('hacked-mode');
+    
+    // Reset title color
+    elements.titleText.textContent = "لغز المحافظات السورية";
+    elements.titleText.style.color = "#ffffff";
+
     showScreen('welcome-screen');
 }
 
